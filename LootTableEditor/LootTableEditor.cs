@@ -54,8 +54,9 @@ namespace LootTableEditor
         Random random = new Random();
         private void OnLootDrop(Hooks.NpcLootDropEventArgs args)
         {
-            Console.WriteLine("{0}[{1}]: ({2}, {3}) - Item:{4}", args.NPCID, args.NPCArrayIndex, args.X, args.Y,
-                              args.ItemID);
+            //Debug print
+            //Console.WriteLine("{0}[{1}]: ({2}, {3}) - Item:{4}", args.NPCID, args.NPCArrayIndex, args.X, args.Y,
+            //      args.ItemID);
 
             if (Config.LootReplacements.ContainsKey(args.NPCID))
             {
@@ -71,10 +72,16 @@ namespace LootTableEditor
 
                         args.Handled = true;
 
-                        if (!repl.TryEachItem)
-                            return;
+                        if (!repl.tryEachItem)
+                            break;
+
+                        //Debug print
+                        //Console.WriteLine("{0} was replaced with {1} of {2}", args.ItemID, d.itemID, stack);
                     }
                 }
+
+                if (repl.alsoDropDefaultLoot)
+                    args.Handled = true;
             }
         }
     }

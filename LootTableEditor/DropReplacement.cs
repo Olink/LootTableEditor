@@ -8,7 +8,8 @@ namespace LootTableEditor
     public class DropReplacement
     {
         public List<Drop> drops;
-        public bool TryEachItem = true;
+        public bool tryEachItem = true;
+        public bool alsoDropDefaultLoot = false;
 
         public DropReplacement()
         {
