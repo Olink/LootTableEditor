@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using TShockAPI;
+using TShockAPI.Hooks;
 using Terraria;
 
 namespace LootTableEditor
@@ -11,8 +12,8 @@ namespace LootTableEditor
     [APIVersion(1,13)]
     public class LootTableEditor : TerrariaPlugin
     {
-        public Config Config;
-
+        private Config config;
+        private string path = "";
         public override string Author
         {
             get { return "Zack Piispanen"; }
@@ -30,7 +31,7 @@ namespace LootTableEditor
 
         public override Version Version
         {
-            get { return new Version(1, 0, 0, 0); }
+            get { return new Version(1, 1, 0, 0); }
         }
 
         public LootTableEditor(Main game) : base(game)
@@ -41,14 +42,19 @@ namespace LootTableEditor
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 Hooks.NpcHooks.NPCLootDrop -= OnLootDrop;
+                TShockAPI.Hooks.GeneralHooks.ReloadEvent -= OnReload;
+            }
         }
 
         public override void Initialize()
         {
-            Config = new Config();
-            Config.ReadFile(Path.Combine(TShock.SavePath, "LootDrop.json"));
+            path = Path.Combine(TShock.SavePath, "LootDrop.json");
+            config = new Config();
+            config.ReadFile(path);
             Hooks.NpcHooks.NPCLootDrop += OnLootDrop;
+            TShockAPI.Hooks.GeneralHooks.ReloadEvent += OnReload;
         }
 
         Random random = new Random();
@@ -58,9 +64,9 @@ namespace LootTableEditor
             //Console.WriteLine("{0}[{1}]: ({2}, {3}) - Item:{4}", args.NPCID, args.NPCArrayIndex, args.X, args.Y,
             //      args.ItemID);
 
-            if (Config.LootReplacements.ContainsKey(args.NPCID))
+            if (config.LootReplacements.ContainsKey(args.NPCID))
             {
-                DropReplacement repl = Config.LootReplacements[args.NPCID];
+                DropReplacement repl = config.LootReplacements[args.NPCID];
                 double rng = random.NextDouble();
                 foreach(Drop d in repl.drops)
                 {
@@ -83,6 +89,11 @@ namespace LootTableEditor
                 if (repl.alsoDropDefaultLoot)
                     args.Handled = true;
             }
+        }
+
+        private void OnReload(ReloadEventArgs args)
+        {
+            config.ReadFile(path);
         }
     }
 }
