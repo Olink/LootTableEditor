@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using TerrariaApi.Server;
 using TShockAPI;
 using TShockAPI.Hooks;
 using Terraria;
 
 namespace LootTableEditor
 {
-    [APIVersion(1,13)]
+    [ApiVersion(1,14)]
     public class LootTableEditor : TerrariaPlugin
     {
         private Config config;
@@ -43,8 +41,8 @@ namespace LootTableEditor
         {
             if (disposing)
             {
-                Hooks.NpcHooks.NPCLootDrop -= OnLootDrop;
-                TShockAPI.Hooks.GeneralHooks.ReloadEvent -= OnReload;
+                ServerApi.Hooks.NpcLootDrop.Deregister(this, OnLootDrop);
+                GeneralHooks.ReloadEvent -= OnReload;
             }
         }
 
@@ -53,20 +51,20 @@ namespace LootTableEditor
             path = Path.Combine(TShock.SavePath, "LootDrop.json");
             config = new Config();
             config.ReadFile(path);
-            Hooks.NpcHooks.NPCLootDrop += OnLootDrop;
-            TShockAPI.Hooks.GeneralHooks.ReloadEvent += OnReload;
+            ServerApi.Hooks.NpcLootDrop.Register(this, OnLootDrop);
+            GeneralHooks.ReloadEvent += OnReload;
         }
 
         Random random = new Random();
-        private void OnLootDrop(Hooks.NpcLootDropEventArgs args)
+        private void OnLootDrop(NpcLootDropEventArgs args)
         {
             //Debug print
             //Console.WriteLine("{0}[{1}]: ({2}, {3}) - Item:{4}", args.NPCID, args.NPCArrayIndex, args.X, args.Y,
             //      args.ItemID);
 
-            if (config.LootReplacements.ContainsKey(args.NPCID))
+            if (config.LootReplacements.ContainsKey(args.NpcId))
             {
-                DropReplacement repl = config.LootReplacements[args.NPCID];
+				DropReplacement repl = config.LootReplacements[args.NpcId];
                 double rng = random.NextDouble();
                 foreach(Drop d in repl.drops)
                 {
