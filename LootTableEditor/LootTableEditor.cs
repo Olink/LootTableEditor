@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using TerrariaApi.Server;
 using TShockAPI;
@@ -66,26 +67,117 @@ namespace LootTableEditor
             {
 				DropReplacement repl = config.LootReplacements[args.NpcId];
                 double rng = random.NextDouble();
-                foreach(Drop d in repl.drops)
-                {
-                    if(d.chance >= rng)
-                    {
-                        var item = TShock.Utils.GetItemById(d.itemID);
-                        int stack = random.Next(d.low_stack, d.high_stack + 1);
-                        Item.NewItem(args.X, args.Y, item.width, item.height, d.itemID, stack, args.Broadcast, d.prefix);
 
-                        args.Handled = true;
+				if (Main.bloodMoon && repl.drops.ContainsKey(State.Bloodmoon))
+				{
+					foreach (Drop d in repl.drops[State.Bloodmoon])
+					{
+						if (d.chance >= rng)
+						{
+							var item = TShock.Utils.GetItemById(d.itemID);
+							int stack = random.Next(d.low_stack, d.high_stack + 1);
+							Item.NewItem(args.X, args.Y, item.width, item.height, d.itemID, stack, args.Broadcast, d.prefix);
 
-                        if (!repl.tryEachItem)
-                            break;
+							args.Handled = true;
 
-                        //Debug print
-                        //Console.WriteLine("{0} was replaced with {1} of {2}", args.ItemID, d.itemID, stack);
-                    }
-                }
+							if (!repl.tryEachItem)
+								break;
+						}
+					}
+				}
 
-                if (repl.alsoDropDefaultLoot)
-                    args.Handled = true;
+				if (Main.eclipse && repl.drops.ContainsKey(State.Eclipse))
+				{
+					foreach (Drop d in repl.drops[State.Eclipse])
+					{
+						if (d.chance >= rng)
+						{
+							var item = TShock.Utils.GetItemById(d.itemID);
+							int stack = random.Next(d.low_stack, d.high_stack + 1);
+							Item.NewItem(args.X, args.Y, item.width, item.height, d.itemID, stack, args.Broadcast, d.prefix);
+
+							args.Handled = true;
+
+							if (!repl.tryEachItem)
+								break;
+						}
+					}
+				}
+
+				if (Main.moonPhase == 0 && !Main.dayTime && repl.drops.ContainsKey(State.Fullmoon))
+				{
+					foreach (Drop d in repl.drops[State.Fullmoon])
+					{
+						if (d.chance >= rng)
+						{
+							var item = TShock.Utils.GetItemById(d.itemID);
+							int stack = random.Next(d.low_stack, d.high_stack + 1);
+							Item.NewItem(args.X, args.Y, item.width, item.height, d.itemID, stack, args.Broadcast, d.prefix);
+
+							args.Handled = true;
+
+							if (!repl.tryEachItem)
+								break;
+						}
+					}
+				}
+
+				if (!Main.dayTime && repl.drops.ContainsKey(State.Night))
+				{
+					foreach (Drop d in repl.drops[State.Night])
+					{
+						if (d.chance >= rng)
+						{
+							var item = TShock.Utils.GetItemById(d.itemID);
+							int stack = random.Next(d.low_stack, d.high_stack + 1);
+							Item.NewItem(args.X, args.Y, item.width, item.height, d.itemID, stack, args.Broadcast, d.prefix);
+
+							args.Handled = true;
+
+							if (!repl.tryEachItem)
+								break;
+						}
+					}
+				}
+
+				if (Main.dayTime && repl.drops.ContainsKey(State.Day))
+				{
+					foreach (Drop d in repl.drops[State.Day])
+					{
+						if (d.chance >= rng)
+						{
+							var item = TShock.Utils.GetItemById(d.itemID);
+							int stack = random.Next(d.low_stack, d.high_stack + 1);
+							Item.NewItem(args.X, args.Y, item.width, item.height, d.itemID, stack, args.Broadcast, d.prefix);
+
+							args.Handled = true;
+
+							if (!repl.tryEachItem)
+								break;
+						}
+					}
+				}
+
+	            if (repl.drops.ContainsKey(State.Normal))
+	            {
+		            foreach (Drop d in repl.drops[State.Normal])
+		            {
+			            if (d.chance >= rng)
+			            {
+				            var item = TShock.Utils.GetItemById(d.itemID);
+				            int stack = random.Next(d.low_stack, d.high_stack + 1);
+				            Item.NewItem(args.X, args.Y, item.width, item.height, d.itemID, stack, args.Broadcast, d.prefix);
+
+				            args.Handled = true;
+
+				            if (!repl.tryEachItem)
+					            break;
+			            }
+		            }
+	            }
+
+				if (repl.alsoDropDefaultLoot)
+					args.Handled = true;
             }
         }
 

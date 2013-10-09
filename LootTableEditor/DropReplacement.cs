@@ -7,15 +7,25 @@ namespace LootTableEditor
 {
     public class DropReplacement
     {
-        public List<Drop> drops;
+		public Dictionary<State, List<Drop>> drops;
         public bool tryEachItem = true;
         public bool alsoDropDefaultLoot = false;
 
         public DropReplacement()
         {
-            drops = new List<Drop>();
+			drops = new Dictionary<State, List<Drop>>();
         }
     }
+
+	public enum State
+	{
+		Normal,
+		Bloodmoon,
+		Eclipse,
+		Night,
+		Day,
+		Fullmoon
+	}
 
     public class Drop
     {

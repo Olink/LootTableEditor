@@ -19,9 +19,12 @@ namespace LootTableEditor
         public void WriteConfig(String file)
         {
             DropReplacement replacement = new DropReplacement();
-            replacement.drops = new List<Drop>();
-            replacement.drops.Add(new Drop {chance = 1.0f, high_stack = 99, low_stack = 1, itemID = 73});
-            LootReplacements.Add(3, replacement);
+	        replacement.drops = new Dictionary<State, List<Drop>>();
+			List<Drop> drops = new List<Drop>();
+	        drops.Add(new Drop{chance = 1.0f, high_stack = 99, low_stack = 1, itemID = 73});
+			replacement.drops.Add(State.Normal, drops);
+			LootReplacements.Add(3, replacement);
+
             using (var tw = new StreamWriter(file))
             {
                 tw.Write(JsonConvert.SerializeObject(LootReplacements, Formatting.Indented));
