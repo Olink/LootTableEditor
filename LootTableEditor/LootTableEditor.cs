@@ -66,12 +66,12 @@ namespace LootTableEditor
             if (config.LootReplacements.ContainsKey(args.NpcId))
             {
 				DropReplacement repl = config.LootReplacements[args.NpcId];
-                double rng = random.NextDouble();
-
+                
 				if (Main.bloodMoon && repl.drops.ContainsKey(State.Bloodmoon))
 				{
 					foreach (Drop d in repl.drops[State.Bloodmoon])
 					{
+						double rng = random.NextDouble();
 						if (d.chance >= rng)
 						{
 							var item = TShock.Utils.GetItemById(d.itemID);
@@ -90,6 +90,7 @@ namespace LootTableEditor
 				{
 					foreach (Drop d in repl.drops[State.Eclipse])
 					{
+						double rng = random.NextDouble();
 						if (d.chance >= rng)
 						{
 							var item = TShock.Utils.GetItemById(d.itemID);
@@ -108,6 +109,7 @@ namespace LootTableEditor
 				{
 					foreach (Drop d in repl.drops[State.Fullmoon])
 					{
+						double rng = random.NextDouble();
 						if (d.chance >= rng)
 						{
 							var item = TShock.Utils.GetItemById(d.itemID);
@@ -126,6 +128,7 @@ namespace LootTableEditor
 				{
 					foreach (Drop d in repl.drops[State.Night])
 					{
+						double rng = random.NextDouble();
 						if (d.chance >= rng)
 						{
 							var item = TShock.Utils.GetItemById(d.itemID);
@@ -144,6 +147,7 @@ namespace LootTableEditor
 				{
 					foreach (Drop d in repl.drops[State.Day])
 					{
+						double rng = random.NextDouble();
 						if (d.chance >= rng)
 						{
 							var item = TShock.Utils.GetItemById(d.itemID);
@@ -162,12 +166,12 @@ namespace LootTableEditor
 	            {
 		            foreach (Drop d in repl.drops[State.Normal])
 		            {
+						double rng = random.NextDouble();
 			            if (d.chance >= rng)
 			            {
 				            var item = TShock.Utils.GetItemById(d.itemID);
 				            int stack = random.Next(d.low_stack, d.high_stack + 1);
 				            Item.NewItem(args.X, args.Y, item.width, item.height, d.itemID, stack, args.Broadcast, d.prefix);
-
 				            args.Handled = true;
 
 				            if (!repl.tryEachItem)
@@ -176,7 +180,7 @@ namespace LootTableEditor
 		            }
 	            }
 
-				if (repl.alsoDropDefaultLoot)
+				if (!repl.alsoDropDefaultLoot)
 					args.Handled = true;
             }
         }
