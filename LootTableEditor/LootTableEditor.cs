@@ -8,7 +8,7 @@ using Terraria;
 
 namespace LootTableEditor
 {
-    [ApiVersion(1,16)]
+    [ApiVersion(1,17)]
     public class LootTableEditor : TerrariaPlugin
     {
         private Config config;
